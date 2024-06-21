@@ -89,8 +89,16 @@ export default function App() {
       <Header booksLength={booksLength} />
       <Search searchText={searchText} handleSearchText={setSearchText} />
       <Booklist
-        completeBooks={books.filter(book => book.status && book.title.toLowerCase().includes(searchText.toLowerCase()))}
-        incompleteBooks={books.filter(book => !book.status && book.title.toLowerCase().includes(searchText.toLowerCase()))}
+        completeBooks={books.filter(
+          (book) =>
+            book.status &&
+            book.title.toLowerCase().includes(searchText.toLowerCase())
+        )}
+        incompleteBooks={books.filter(
+          (book) =>
+            !book.status &&
+            book.title.toLowerCase().includes(searchText.toLowerCase())
+        )}
         handleSetUpdateBook={handleSetUpdateBook}
         handleDeleteBook={handleDeleteBook}
         handleMarkBook={handleMarkBook}

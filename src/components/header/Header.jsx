@@ -10,7 +10,7 @@ const Header = (props) => {
       <div className="container header__container">
         <div className="header__profile">
           <a
-            href="https://github.com/HendrikChristanto"
+            href="Recomended Reading"
             target="_blank"
             rel="noreferrer"
           >
