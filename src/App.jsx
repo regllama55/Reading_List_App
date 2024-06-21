@@ -1,52 +1,20 @@
-// Wrap App within <BrowserRouter> to enable routing:
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-)
-
-import { nanoid } from "nanoid";
 import React, { useContext, useEffect, useState } from "react";
-
+import { nanoid } from "nanoid";
 import Booklist from "./components/booklist/Booklist";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import Modal from "./components/modal/Modal";
 import Search from "./components/search/Search";
 import Toast from "./components/toast/Toast";
-
 import { ToastContext } from "./context/ToastContext";
-
 import "./App.css";
 
 export default function App() {
   const [books, setBooks] = useState([
-    {
-      id: nanoid(),
-      title: "A Smarter Way to Learn HTM & CSS",
-      author: "Mark Myers",
-      status: false
-    },
-    {
-      id: nanoid(),
-      title: "A Smarter Way to Learn JavaScript",
-      author: "Mark Myers",
-      status: false
-    },
-    {
-      id: nanoid(),
-      title: "JavaScript & JQuery",
-      author: "Jon Duckett",
-      status: false
-    },
-    {
-      id: nanoid(),
-      title: "The Phoenix Project",
-      author: "Ed",
-      status: true
-    }
+    { id: nanoid(), title: "A Smarter Way to Learn HTM & CSS", author: "Mark Myers", status: false },
+    { id: nanoid(), title: "A Smarter Way to Learn JavaScript", author: "Mark Myers", status: false },
+    { id: nanoid(), title: "JavaScript & JQuery", author: "Jon Duckett", status: false },
+    { id: nanoid(), title: "The Phoenix Project", author: "Ed", status: true }
   ]);
   const [booksLength, setBooksLength] = useState(books.length);
   const [searchText, setSearchText] = useState("");
@@ -54,55 +22,14 @@ export default function App() {
   const [updateId, setUpdateId] = useState(null);
   const [titleText, setTitleText] = useState("");
   const [authorText, setAuthorText] = useState("");
-
   const [position, setPosition] = useState("top-left");
   const { state, dispatch } = useContext(ToastContext);
 
   const handleNotification = (type, title, message) => {
-    switch (type) {
-      case "SUCCESS":
-        return dispatch({
-          type: "ADD_NOTIFICATION",
-          payload: {
-            id: nanoid(),
-            type,
-            title,
-            message
-          }
-        });
-      case "INFO":
-        return dispatch({
-          type: "ADD_NOTIFICATION",
-          payload: {
-            id: nanoid(),
-            type,
-            title,
-            message
-          }
-        });
-      case "WARNING":
-        return dispatch({
-          type: "ADD_NOTIFICATION",
-          payload: {
-            id: nanoid(),
-            type,
-            title,
-            message
-          }
-        });
-      case "DANGER":
-        return dispatch({
-          type: "ADD_NOTIFICATION",
-          payload: {
-            id: nanoid(),
-            type,
-            title,
-            message
-          }
-        });
-      default:
-        return;
-    }
+    dispatch({
+      type: "ADD_NOTIFICATION",
+      payload: { id: nanoid(), type, title, message }
+    });
   };
 
   useEffect(() => {
@@ -115,9 +42,7 @@ export default function App() {
     setAuthorText("");
   };
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+  const handleOpenModal = () => setModalOpen(true);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -126,14 +51,8 @@ export default function App() {
 
   const handleAddBook = (event) => {
     event.preventDefault();
-    const newBook = {
-      id: nanoid(),
-      title: titleText,
-      author: authorText,
-      status: false
-    };
-    const newBooks = [...books, newBook];
-    setBooks(newBooks);
+    const newBook = { id: nanoid(), title: titleText, author: authorText, status: false };
+    setBooks([...books, newBook]);
     handleCloseModal();
     handleNotification("SUCCESS", "Success", "Book added successfully.");
   };
@@ -150,32 +69,18 @@ export default function App() {
 
   const handleUpdateBook = (event) => {
     event.preventDefault();
-    const newBooks = books.map((book) => {
-      if (book.id === updateId) {
-        book.title = titleText;
-        book.author = authorText;
-      }
-      return book;
-    });
-    setBooks(newBooks);
+    setBooks(books.map((book) => book.id === updateId ? { ...book, title: titleText, author: authorText } : book));
     handleCloseModal();
     handleNotification("SUCCESS", "Success", "Successfully Updated.");
   };
 
   const handleDeleteBook = (id) => {
-    const newBooks = books.filter((book) => book.id !== id);
-    setBooks(newBooks);
+    setBooks(books.filter((book) => book.id !== id));
     handleNotification("SUCCESS", "Success", "Successfully Deleted.");
   };
 
   const handleMarkBook = (id) => {
-    const newBooks = books.map((book) => {
-      if (book.id === id) {
-        book.status = !book.status;
-      }
-      return book;
-    });
-    setBooks(newBooks);
+    setBooks(books.map((book) => book.id === id ? { ...book, status: !book.status } : book));
     handleNotification("SUCCESS", "Success", "Successfully Updated.");
   };
 
@@ -184,16 +89,8 @@ export default function App() {
       <Header booksLength={booksLength} />
       <Search searchText={searchText} handleSearchText={setSearchText} />
       <Booklist
-        completeBooks={books.filter(
-          (book) =>
-            book.status &&
-            book.title.toLowerCase().includes(searchText.toLowerCase())
-        )}
-        incompleteBooks={books.filter(
-          (book) =>
-            !book.status &&
-            book.title.toLowerCase().includes(searchText.toLowerCase())
-        )}
+        completeBooks={books.filter(book => book.status && book.title.toLowerCase().includes(searchText.toLowerCase()))}
+        incompleteBooks={books.filter(book => !book.status && book.title.toLowerCase().includes(searchText.toLowerCase()))}
         handleSetUpdateBook={handleSetUpdateBook}
         handleDeleteBook={handleDeleteBook}
         handleMarkBook={handleMarkBook}
